@@ -4,18 +4,19 @@
  *
  * Author: LITW Team.
  *
- * © Copyright 2017-2023 LabintheWild.
+ * © Copyright 2017-2024 LabintheWild.
  * For questions about this file and permission to use
  * the code, contact us at tech@labinthewild.org
  *************************************************************/
 
 // load webpack modules
 window.$ = window.jQuery = require("jquery");
-require("bootstrap");
+window.bootstrap = require("bootstrap");
 require("jquery-ui-bundle");
 var _ = require('lodash');
 var introTemplate = require("./pages/introduction.html");
 var irbTemplate = require("../templates/irb.html");
+var questionTemplate = require("./pages/question.html");
 var demographicsTemplate = require("../templates/demographics.html");
 var instructionsTemplate = require("../templates/instructions.html");
 var loadingTemplate = require("../templates/loading.html");
@@ -44,6 +45,13 @@ module.exports = (function(exports) {
 				type: "display-slide",
 				template: irbTemplate,
 				display_element: $("#irb"),
+				display_next_button: false,
+			},
+			QUESTION: {
+				name: "question",
+				type: "display-slide",
+				template: questionTemplate,
+				display_element: $("#question"),
 				display_next_button: false,
 			},
 			DEMOGRAPHICS: {
@@ -80,6 +88,7 @@ module.exports = (function(exports) {
 	};
 
 	function configureStudy() {
+		timeline.push(params.slides.QUESTION);
 		timeline.push(params.slides.INTRODUCTION);
 		timeline.push(params.slides.INFORMED_CONSENT);
 		timeline.push(params.slides.DEMOGRAPHICS);
