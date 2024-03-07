@@ -20,11 +20,12 @@ var questionTemplate = require("./pages/question.html");
 var demographicsTemplate = require("../templates/demographics.html");
 var instructionsTemplate = require("../templates/instructions.html");
 var loadingTemplate = require("../templates/loading.html");
-var resultsTemplate = require("../templates/results.html");
+var resultsTemplate = require("./pages/results.html");
 var resultsFooter = require("../templates/results-footer.html");
 var commentsTemplate = require("../templates/comments.html");
 require("../js/litw/jspsych-display-info");
 require("../js/litw/jspsych-display-slide");
+import * as d3 from "d3";
 
 module.exports = (function(exports) {
 	var timeline = [],
@@ -88,11 +89,11 @@ module.exports = (function(exports) {
 	};
 
 	function configureStudy() {
-		timeline.push(params.slides.QUESTION);
-		timeline.push(params.slides.INTRODUCTION);
-		timeline.push(params.slides.INFORMED_CONSENT);
-		timeline.push(params.slides.DEMOGRAPHICS);
-		timeline.push(params.slides.COMMENTS);
+		// timeline.push(params.slides.INTRODUCTION);
+		// timeline.push(params.slides.INFORMED_CONSENT);
+		// timeline.push(params.slides.QUESTION);
+		// timeline.push(params.slides.DEMOGRAPHICS);
+		// timeline.push(params.slides.COMMENTS);
 		timeline.push(params.slides.RESULTS);
 	}
 
