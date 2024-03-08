@@ -1,31 +1,71 @@
 <div id="question-box" class="instructions-stim-container">
+    <h2 id="progress">
+        <span data-i18n="study-tl-q1-question"></span>
+        <span id="progress-now"></span>
+        <span>/</span>
+        <span id="progress-total"></span>
+    </h2>
     <div class="row">
         <div class="col d-flex justify-content-center">
-            <h2 id="questionID" data-question_id="q1" class="bolded-blue" data-i18n="study-tl-q1-title"></h2>
+            <h4 id="questionID" data-question_id="q1" class="bolded-blue">
+                <span data-i18n="study-tl-q1-title-p1"></span>
+                <span id="question-behavior"></span>
+                <span id="question-situation"></span>
+                <span>?</span>
+            </h4>
         </div>
     </div>
     <div class="row">
         <div class="d-grid gap-2 d-md-block justify-content-center align-self-center">
             <button id="button1" data-response_id="1" type="button" class="btn btn-primary" data-bs-toggle="button"
-                    data-i18n="study-tl-q1-r1" onclick="selection('button1')"></button>
+                    data-i18n="study-tl-q1-r1" onclick="clickButton('button1')"></button>
             <button id="button2" data-response_id="2" type="button" class="btn btn-primary" data-bs-toggle="button"
-                    data-i18n="study-tl-q1-r2" onclick="selection('button2')"></button>
+                    data-i18n="study-tl-q1-r2" onclick="clickButton('button2')"></button>
             <button id="button3" data-response_id="3" type="button" class="btn btn-primary" data-bs-toggle="button"
-                    data-i18n="study-tl-q1-r3" onclick="selection('button3')"></button>
+                    data-i18n="study-tl-q1-r3" onclick="clickButton('button3')"></button>
             <button id="button4" data-response_id="4" type="button" class="btn btn-primary" data-bs-toggle="button"
-                    data-i18n="study-tl-q1-r4" onclick="selection('button4')"></button>
+                    data-i18n="study-tl-q1-r4" onclick="clickButton('button4')"></button>
             <button id="button5" data-response_id="5" type="button" class="btn btn-primary" data-bs-toggle="button"
-                    data-i18n="study-tl-q1-r5" onclick="selection('button5')"></button>
+                    data-i18n="study-tl-q1-r5" onclick="clickButton('button5')"></button>
+            <div id="submit" class="invisible gap-4">
+                <button id="button-save" type="button" class="btn btn-secondary" data-bs-toggle="button"
+                        data-i18n="study-tl-q1-save" onclick="refreshQuestion()"></button>
+            </div>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-    let selectionData = {}
+    let questionsData = LITW.study.params.questions;
+    let count = 0;
+    let currentQ = null;
 
-    let selection = function(buttonID) {
+    let refreshQuestion = function () {
+        document.getElementById('submit').classList.add('invisible');
+        selectResponse(null);
+        if (count < questionsData.length) {
+            currentQ = questionsData[count++];
+            document.getElementById('progress-now').innerText = `${count}`;
+            currentQ.situation.text = $.i18n(`study-tl-situation-${count}`);
+            currentQ.behavior.text = $.i18n(`study-tl-behavior-${count}`);
+            document.getElementById('question-behavior').innerText = currentQ.behavior.text;
+            document.getElementById('question-situation').innerText = currentQ.situation.text;
+        } else {
+            saveSelection(questionsData);
+            $('#btn-next-page').click();
+        }
+    }
+
+    let clickButton = function(buttonID) {
         let clickedElem = document.getElementById(buttonID);
+        selectResponse(clickedElem);
         let questionID = document.getElementById('questionID').dataset.question_id;
+        let responseID = clickedElem.dataset.response_id;
+        currentQ.response = responseID;
+        document.getElementById('submit').classList.remove('invisible');
+    }
+
+    let selectResponse = function(clickedElem) {
         if(clickedElem) {
             document.querySelectorAll('button').forEach(btn => {
                 if(btn.id === clickedElem.id && !btn.classList.contains('active')) {
@@ -35,12 +75,12 @@
                     bootstrap.Button.getInstance(btn).toggle();
                 }
             })
-            let responseID = clickedElem.dataset.response_id;
-            console.log(`CLICKED: ${responseID}`);
-            selectionData[questionID] = responseID;
-            LITW.utils.showNextButton(() => { saveSelection(selectionData) });
         } else {
-            console.log(`CLICK ERROR: ID ${buttonID}`);
+            document.querySelectorAll('button').forEach(btn => {
+                if(btn.classList.contains('active')) {
+                    bootstrap.Button.getInstance(btn).toggle();
+                }
+            })
         }
     }
 
@@ -50,5 +90,10 @@
             questionnaire: selectionData
         });
     }
+
+    $(document).ready(function() {
+        document.getElementById('progress-total').innerText = `${questionsData.length}`;
+        refreshQuestion()
+    })
 </script>
 

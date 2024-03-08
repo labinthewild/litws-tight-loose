@@ -85,18 +85,37 @@ module.exports = (function(exports) {
 					calculateResults();
 				}
 			}
-		}
+		},
+		questions: getSetOfQuestions(2, 15, 12)
 	};
 
 	function configureStudy() {
 		// timeline.push(params.slides.INTRODUCTION);
 		// timeline.push(params.slides.INFORMED_CONSENT);
-		// timeline.push(params.slides.QUESTION);
+		timeline.push(params.slides.QUESTION);
 		// timeline.push(params.slides.DEMOGRAPHICS);
 		// timeline.push(params.slides.COMMENTS);
 		timeline.push(params.slides.RESULTS);
 	}
 
+	function getSetOfQuestions(numQ, numSituations, numBehaviors) {
+		let questions = [];
+		for (let count= 1; count <= numQ; count++){
+			let randomSituationID = Math.floor(Math.random()*numSituations);
+			let randomBehaviorID = Math.floor(Math.random()*numBehaviors);
+			questions.push(
+				{
+					situation: {
+						ID: randomSituationID,
+					},
+					behavior: {
+						ID: randomBehaviorID,
+					}
+				}
+			)
+		}
+		return questions;
+	}
 	function calculateResults() {
 		//TODO: Nothing to calculate
 		let results_data = {}
