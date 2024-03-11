@@ -1,0 +1,67 @@
+<div id="question-box" class="instructions-stim-container">
+    <div id="intro" class="row gap-2">
+        <h2 data-i18n="study-tl-q2-intro"></h2>
+        <select class="form-select mb-4" aria-label="Default select example">
+            <option selected data-i18n="study-tl-q2-country"></option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+        </select>
+    </div>
+
+    <div class="row gap-2">
+        <p>
+            <span data-i18n="study-tl-q2-expl1"></span>
+            <span data-i18n="study-tl-q2-expl2"></span>
+        </p>
+    </div>
+
+{{#each questions}}
+    <div class="row mt-4">
+        <h6 id="question-{{ this.id }}" data-type="question" class="bolded-blue">{{ this.text }}</h6>
+        <div class="col d-flex justify-content-center">
+            <div class="btn-group me-2" role="group" aria-label="First group">
+{{#each ../responses}}
+                <button type="button" data-qid="{{ ../this.id }}" data-rid="{{ this.id }}" class="btn btn-outline-primary"
+                        onclick="clickButton({{ ../this.id }}, {{ this.id }})">
+                    {{ this.text }}
+                </button>
+{{/each}}
+            </div>
+        </div>
+    </div>
+{{/each}}
+
+</div>
+
+<script type="text/javascript">
+    let questionsData = {};
+    let numQuestions = document.querySelectorAll('[data-type="question"]').length;
+
+    let clickButton = function(qID, rID) {
+        selectResponse(qID, rID);
+        questionsData[qID] = rID;
+        if(Object.keys(questionsData).length === numQuestions) {
+            LITW.utils.showNextButton(() => {
+                saveSelection(questionsData);
+            })
+        }
+    }
+
+    let selectResponse = function(qID, rID) {
+        document.querySelectorAll(`[data-qid='${qID}']`).forEach(btn => {
+            if(btn.dataset.rid == rID && !btn.classList.contains('active')) {
+                bootstrap.Button.getOrCreateInstance(btn).toggle();
+            }
+            if(btn.dataset.rid != rID && btn.classList.contains('active')) {
+                bootstrap.Button.getOrCreateInstance(btn).toggle();
+            }
+        })
+    }
+
+    let saveSelection = function(selectionData) {
+        LITW.data.submitStudyData({
+            quest_norms: selectionData
+        });
+    }
+</script>

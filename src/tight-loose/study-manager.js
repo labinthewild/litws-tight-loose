@@ -16,7 +16,8 @@ require("jquery-ui-bundle");
 var _ = require('lodash');
 var introTemplate = require("./pages/introduction.html");
 var irbTemplate = require("../templates/irb.html");
-var questionTemplate = require("./pages/question.html");
+var question1Template = require("./pages/question1.html");
+var question2Template = require("./pages/question2.html");
 var demographicsTemplate = require("../templates/demographics.html");
 var instructionsTemplate = require("../templates/instructions.html");
 var loadingTemplate = require("../templates/loading.html");
@@ -48,11 +49,19 @@ module.exports = (function(exports) {
 				display_element: $("#irb"),
 				display_next_button: false,
 			},
-			QUESTION: {
-				name: "question",
+			QUESTION1: {
+				name: "question_behavior",
 				type: "display-slide",
-				template: questionTemplate,
-				display_element: $("#question"),
+				template: question1Template,
+				display_element: $("#question1"),
+				display_next_button: false,
+			},
+			QUESTION2: {
+				name: "question_norms",
+				type: "display-slide",
+				template: question2Template,
+				template_data: getExpectationQuestions,
+				display_element: $("#question2"),
 				display_next_button: false,
 			},
 			DEMOGRAPHICS: {
@@ -86,19 +95,20 @@ module.exports = (function(exports) {
 				}
 			}
 		},
-		questions: getSetOfQuestions(2, 15, 12)
+		behavioral_questions: getBehavioralQuestions(5, 15, 12)
 	};
 
 	function configureStudy() {
 		// timeline.push(params.slides.INTRODUCTION);
 		// timeline.push(params.slides.INFORMED_CONSENT);
-		timeline.push(params.slides.QUESTION);
+		// timeline.push(params.slides.QUESTION1);
+		timeline.push(params.slides.QUESTION2);
 		// timeline.push(params.slides.DEMOGRAPHICS);
 		// timeline.push(params.slides.COMMENTS);
 		timeline.push(params.slides.RESULTS);
 	}
 
-	function getSetOfQuestions(numQ, numSituations, numBehaviors) {
+	function getBehavioralQuestions(numQ, numSituations, numBehaviors) {
 		let questions = [];
 		for (let count= 1; count <= numQ; count++){
 			let randomSituationID = Math.floor(Math.random()*numSituations);
@@ -116,6 +126,33 @@ module.exports = (function(exports) {
 		}
 		return questions;
 	}
+
+	function getExpectationQuestions() {
+		let numQ = 6;
+		let numA = 6;
+		let quest = {
+			questions: [],
+			responses: []
+		}
+		let counter = 1;
+		while(counter <= Math.max(numQ, numA)) {
+			if (counter <= numQ) {
+				quest.questions.push({
+					id: counter,
+					text: $.i18n(`study-tl-q2-${counter}`)
+				})
+			}
+			if (counter <= numA) {
+				quest.responses.push({
+					id: counter,
+					text: $.i18n(`study-tl-q2-r${counter}`)
+				})
+			}
+			counter++;
+		}
+		return quest;
+	}
+
 	function calculateResults() {
 		//TODO: Nothing to calculate
 		let results_data = {}
