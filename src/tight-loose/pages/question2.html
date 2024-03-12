@@ -1,50 +1,73 @@
 <div id="question-box" class="instructions-stim-container">
     <div id="intro" class="row gap-2">
         <h2 data-i18n="study-tl-q2-intro"></h2>
-        <select class="form-select mb-4" aria-label="Default select example">
-            <option selected data-i18n="study-tl-q2-country"></option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+        <p data-i18n="study-tl-q2-country"></p>
+        <select id="countriesSelector" class="form-select mb-4" aria-label="Select your country">
+            <option selected value="0">--</option>
         </select>
     </div>
 
-    <div class="row gap-2">
-        <p>
-            <span data-i18n="study-tl-q2-expl1"></span>
-            <span data-i18n="study-tl-q2-expl2"></span>
-        </p>
-    </div>
-
-{{#each questions}}
-    <div class="row mt-4">
-        <h6 id="question-{{ this.id }}" data-type="question" class="bolded-blue">{{ this.text }}</h6>
-        <div class="col d-flex justify-content-center">
-            <div class="btn-group me-2" role="group" aria-label="First group">
-{{#each ../responses}}
-                <button type="button" data-qid="{{ ../this.id }}" data-rid="{{ this.id }}" class="btn btn-outline-primary"
-                        onclick="clickButton({{ ../this.id }}, {{ this.id }})">
-                    {{ this.text }}
-                </button>
-{{/each}}
+    <div id="questionnaire" class="invisible">
+        <div class="row gap-2">
+            <p>
+                <span data-i18n="study-tl-q2-expl1"></span>
+                <span data-i18n="study-tl-q2-expl2"></span>
+            </p>
+        </div>
+    {{#each questions}}
+        <div class="row mt-4">
+            <h6 id="question-{{ this.id }}" data-type="question" class="bolded-blue">{{ this.text }}</h6>
+            <div class="col d-flex justify-content-center">
+                <div class="btn-group me-2" role="group" aria-label="First group">
+    {{#each ../responses}}
+                    <button type="button" data-qid="{{ ../this.id }}" data-rid="{{ this.id }}" class="btn btn-outline-primary"
+                            onclick="clickButton({{ ../this.id }}, {{ this.id }})">
+                        {{ this.text }}
+                    </button>
+    {{/each}}
+                </div>
             </div>
         </div>
-    </div>
-{{/each}}
+    {{/each}}
 
+        <div id="submit" class="row mt-4 invisible">
+            <button id="button-save" type="button" class="btn btn-primary" data-bs-toggle="button"
+                    data-i18n="study-tl-q2-save" onclick="finishQuest()"></button>
+        </div>
+
+    </div>
 </div>
 
 <script type="text/javascript">
     let questionsData = {};
+    let selectedCountry = null;
     let numQuestions = document.querySelectorAll('[data-type="question"]').length;
+
+    let setupCountrySelection = function() {
+        let countries = LITW.study.params.countries;
+        let selector = document.getElementById('countriesSelector');
+        selector.addEventListener('change',
+            (ev) => {
+                selectedCountry = ev.target.value;
+                let questionnaire = document.getElementById('questionnaire');
+                if (selectedCountry && selectedCountry !== '0') {
+                    questionnaire.classList.remove('invisible');
+                } else {
+                    questionnaire.classList.add('invisible');
+                }
+            }
+        );
+        for (let country of Object.keys(countries)) {
+            selector.innerHTML = selector.innerHTML +
+                `<option value="${country}">${countries[country]}</option>`;
+        }
+    }
 
     let clickButton = function(qID, rID) {
         selectResponse(qID, rID);
         questionsData[qID] = rID;
         if(Object.keys(questionsData).length === numQuestions) {
-            LITW.utils.showNextButton(() => {
-                saveSelection(questionsData);
-            })
+            document.getElementById('submit').classList.remove('invisible');
         }
     }
 
@@ -59,9 +82,19 @@
         })
     }
 
-    let saveSelection = function(selectionData) {
+    let finishQuest = function() {
         LITW.data.submitStudyData({
-            quest_norms: selectionData
+            quest_norms: {
+                country: selectedCountry,
+                responses: questionsData
+            }
         });
+        //TODO: Create a new UTIL call that calls this click (and maybe more)!
+        //EXPL: We currently use the "showNextButton(fn) in our slide processor, which should NOT be overwritten!
+        document.getElementById('btn-next-page').click()
     }
+
+    $('document').ready(()=>{
+        setupCountrySelection();
+    })
 </script>

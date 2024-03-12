@@ -34,6 +34,7 @@ module.exports = (function(exports) {
 		study_id: "TO_BE_ADDED_IF_USING_LITW_INFRA",
 		study_recommendation: [],
 		preLoad: ["../img/btn-next.png","../img/btn-next-active.png","../img/ajax-loader.gif"],
+		countries: {},
 		slides: {
 			INTRODUCTION: {
 				name: "introduction",
@@ -192,6 +193,10 @@ module.exports = (function(exports) {
 		});
 	}
 
+	async function loadResourcesInParallel() {
+		let data = await fetch('../templates/i18n/countries-en.json');
+		params.countries = await data.json();
+	}
 	function startStudy() {
 		// generate unique participant id and geolocate participant
 		LITW.data.initialize();
@@ -219,10 +224,10 @@ module.exports = (function(exports) {
 		// determine and set the study language
 		$.i18n().locale = LITW.locale.getLocale();
 		var languages = {
-			'en': './i18n/en.json?v=1.0',
-			'pt': './i18n/pt-br.json?v=1.0',
+			'en': './i18n/en.json?v=1.0'
 		};
 		//TODO needs to be a little smarter than this when serving specific language versions, like pt-BR!
+		//TODO this sort of functionality should be refactored into a library method!
 		var language = LITW.locale.getLocale().substring(0,2);
 		var toLoad = {};
 		if(language in languages) {
@@ -259,6 +264,7 @@ module.exports = (function(exports) {
 
 	// when the page is loaded, start the study!
 	$(document).ready(function() {
+		loadResourcesInParallel();
 		startExperiment();
 	});
 	exports.study = {};
