@@ -21,7 +21,7 @@
                 <div class="btn-group me-2" role="group" aria-label="First group">
     {{#each ../responses}}
                     <button type="button" data-qid="{{ ../this.id }}" data-rid="{{ this.id }}" class="btn btn-outline-primary"
-                            onclick="clickButton({{ ../this.id }}, {{ this.id }})">
+                            onclick="respondNormsQuestion({{ ../this.id }}, {{ this.id }})">
                         {{ this.text }}
                     </button>
     {{/each}}
@@ -32,16 +32,16 @@
 
         <div id="submit" class="row mt-4 invisible">
             <button id="button-save" type="button" class="btn btn-primary" data-bs-toggle="button"
-                    data-i18n="study-tl-q2-save" onclick="finishQuest()"></button>
+                    data-i18n="study-tl-q2-save" onclick="finishNormsQuest()"></button>
         </div>
 
     </div>
 </div>
 
 <script type="text/javascript">
-    let questionsData = {};
+    let questionsNorms = {};
     let selectedCountry = null;
-    let numQuestions = document.querySelectorAll('[data-type="question"]').length;
+    let numNormQuestions = document.querySelectorAll('[data-type="question"]').length;
 
     let setupCountrySelection = function() {
         let countries = LITW.study.params.countries;
@@ -63,15 +63,15 @@
         }
     }
 
-    let clickButton = function(qID, rID) {
-        selectResponse(qID, rID);
-        questionsData[qID] = rID;
-        if(Object.keys(questionsData).length === numQuestions) {
+    let respondNormsQuestion = function(qID, rID) {
+        selectNormsResponse(qID, rID);
+        questionsNorms[qID] = rID;
+        if(Object.keys(questionsNorms).length === numNormQuestions) {
             document.getElementById('submit').classList.remove('invisible');
         }
     }
 
-    let selectResponse = function(qID, rID) {
+    let selectNormsResponse = function(qID, rID) {
         document.querySelectorAll(`[data-qid='${qID}']`).forEach(btn => {
             if(btn.dataset.rid == rID && !btn.classList.contains('active')) {
                 bootstrap.Button.getOrCreateInstance(btn).toggle();
@@ -82,11 +82,11 @@
         })
     }
 
-    let finishQuest = function() {
+    let finishNormsQuest = function() {
         LITW.data.submitStudyData({
             quest_norms: {
                 country: selectedCountry,
-                responses: questionsData
+                responses: questionsNorms
             }
         });
         //TODO: Create a new UTIL call that calls this click (and maybe more)!

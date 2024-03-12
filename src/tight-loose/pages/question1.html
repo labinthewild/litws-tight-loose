@@ -5,7 +5,14 @@
         <span>/</span>
         <span id="progress-total"></span>
     </h2>
-    <div class="row">
+    <div id="instructions">
+        <p data-i18n="study-tl-explain-title" class="bolded-blue"></p>
+        <p>
+            <span data-i18n="study-tl-explain-p1"></span>
+            <span data-i18n="study-tl-explain-p2"></span>
+        </p>
+    </div>
+    <div id="question" class="row">
         <div class="col d-flex justify-content-center">
             <h4 id="questionID" data-question_id="q1" class="bolded-blue">
                 <span data-i18n="study-tl-q1-title-p1"></span>
@@ -15,57 +22,60 @@
             </h4>
         </div>
     </div>
-    <div class="row">
+    <div id="response" class="row">
         <div class="d-grid gap-2 justify-content-center align-self-center">
-            <button id="button1" data-response_id="1" type="button" class="btn btn-primary" data-bs-toggle="button"
-                    data-i18n="study-tl-q1-r1" onclick="clickButton('button1')"></button>
-            <button id="button2" data-response_id="2" type="button" class="btn btn-primary" data-bs-toggle="button"
-                    data-i18n="study-tl-q1-r2" onclick="clickButton('button2')"></button>
-            <button id="button3" data-response_id="3" type="button" class="btn btn-primary" data-bs-toggle="button"
-                    data-i18n="study-tl-q1-r3" onclick="clickButton('button3')"></button>
-            <button id="button4" data-response_id="4" type="button" class="btn btn-primary" data-bs-toggle="button"
-                    data-i18n="study-tl-q1-r4" onclick="clickButton('button4')"></button>
-            <button id="button5" data-response_id="5" type="button" class="btn btn-primary" data-bs-toggle="button"
-                    data-i18n="study-tl-q1-r5" onclick="clickButton('button5')"></button>
+            <button id="button1" data-response_id="1" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                    data-i18n="study-tl-q1-r1" onclick="respondBehavioralQuestion('button1')"></button>
+            <button id="button2" data-response_id="2" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                    data-i18n="study-tl-q1-r2" onclick="respondBehavioralQuestion('button2')"></button>
+            <button id="button3" data-response_id="3" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                    data-i18n="study-tl-q1-r3" onclick="respondBehavioralQuestion('button3')"></button>
+            <button id="button4" data-response_id="4" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                    data-i18n="study-tl-q1-r4" onclick="respondBehavioralQuestion('button4')"></button>
+            <button id="button5" data-response_id="5" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                    data-i18n="study-tl-q1-r5" onclick="respondBehavioralQuestion('button5')"></button>
             <div id="submit" class="invisible gap-4">
-                <button id="button-save" type="button" class="btn btn-secondary" data-bs-toggle="button"
-                        data-i18n="study-tl-q1-save" onclick="refreshQuestion()"></button>
+                <button id="button-save" type="button" class="btn btn-primary" data-bs-toggle="button"
+                        data-i18n="study-tl-q1-save" onclick="refreshBehavioralQuestion()"></button>
             </div>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-    let questionsData = LITW.study.params.behavioral_questions;
+    let questionsBehavior = LITW.study.params.behavioral_questions;
     let count = 0;
     let currentQ = null;
 
-    let refreshQuestion = function () {
+    let refreshBehavioralQuestion = function () {
         document.getElementById('submit').classList.add('invisible');
-        selectResponse(null);
-        if (count < questionsData.length) {
-            currentQ = questionsData[count++];
+        selectBehavioralResponse(null);
+        if (count > 0) {
+            document.getElementById('instructions').classList.add('invisible');
+        }
+        if (count < questionsBehavior.length) {
+            currentQ = questionsBehavior[count++];
             document.getElementById('progress-now').innerText = `${count}`;
             currentQ.situation.text = $.i18n(`study-tl-situation-${count}`);
             currentQ.behavior.text = $.i18n(`study-tl-behavior-${count}`);
             document.getElementById('question-behavior').innerText = currentQ.behavior.text;
             document.getElementById('question-situation').innerText = currentQ.situation.text;
         } else {
-            saveSelection(questionsData);
+            saveBehavioralData(questionsBehavior);
             $('#btn-next-page').click();
         }
     }
 
-    let clickButton = function(buttonID) {
+    let respondBehavioralQuestion = function(buttonID) {
         let clickedElem = document.getElementById(buttonID);
-        selectResponse(clickedElem);
+        selectBehavioralResponse(clickedElem);
         let questionID = document.getElementById('questionID').dataset.question_id;
         let responseID = clickedElem.dataset.response_id;
         currentQ.response = responseID;
         document.getElementById('submit').classList.remove('invisible');
     }
 
-    let selectResponse = function(clickedElem) {
+    let selectBehavioralResponse = function(clickedElem) {
         if(clickedElem) {
             document.querySelectorAll('button').forEach(btn => {
                 if(btn.id === clickedElem.id && !btn.classList.contains('active')) {
@@ -84,7 +94,7 @@
         }
     }
 
-    let saveSelection = function(selectionData) {
+    let saveBehavioralData = function(selectionData) {
         console.log('DATA SUBMIT', selectionData);
         LITW.data.submitStudyData({
             quest_behavior: selectionData
@@ -92,8 +102,8 @@
     }
 
     $(document).ready(function() {
-        document.getElementById('progress-total').innerText = `${questionsData.length}`;
-        refreshQuestion()
+        document.getElementById('progress-total').innerText = `${questionsBehavior.length}`;
+        refreshBehavioralQuestion()
     })
 </script>
 
