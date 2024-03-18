@@ -14,6 +14,7 @@ window.$ = window.jQuery = require("jquery");
 window.bootstrap = require("bootstrap");
 require("jquery-ui-bundle");
 var _ = require('lodash');
+var mathjs = require("mathjs");
 var introTemplate = require("./pages/introduction.html");
 var irbTemplate = require("../templates/irb.html");
 var question1Template = require("./pages/question1.html");
@@ -96,14 +97,15 @@ module.exports = (function(exports) {
 				}
 			}
 		},
-		behavioral_questions: getBehavioralQuestions(5, 15, 12)
+		behavioral_questions: getBehavioralQuestions(5, 15, 12),
+		norms_q_results: null
 	};
 
 	function configureStudy() {
 		// timeline.push(params.slides.INTRODUCTION);
 		// timeline.push(params.slides.INFORMED_CONSENT);
-		timeline.push(params.slides.QUESTION1);
-		timeline.push(params.slides.QUESTION2);
+		// timeline.push(params.slides.QUESTION1);
+		//timeline.push(params.slides.QUESTION2);
 		// timeline.push(params.slides.DEMOGRAPHICS);
 		// timeline.push(params.slides.COMMENTS);
 		timeline.push(params.slides.RESULTS);
@@ -154,10 +156,46 @@ module.exports = (function(exports) {
 		return quest;
 	}
 
+	function calculateScore(quest_responses) {
+		//Inverse Q4 coding and calculate simple sum score
+		let q4_response = quest_responses[4];
+		quest_responses[4] = (6-q4_response)+1;
+		let score = _.sum(Object.values(quest_responses));
+		//Dimension 1: [6,36] (min-max) point in questionnaire
+		let quest_min = 6;
+		let quest_max = 36;
+		//Dimension 2: [1.6, 12.3] (min-max) national scores in tight-loose dataset
+		let tl_min = _.min(Object.values(params.tight_loose));
+		let tl_max = _.max(Object.values(params.tight_loose));
+		let conversion_rate = (tl_max-tl_min)/(quest_max-quest_min)
+		//Map individual score into countries tight-loose dimension!
+		return ((score-quest_min)*conversion_rate)+tl_min;
+	}
+
 	function calculateResults() {
-		//TODO: Nothing to calculate
-		let results_data = {}
-		showResults(results_data, true)
+		let norms_data = {};
+		if(params.norms_q_results) {
+			norms_data = JSON.parse(JSON.stringify(params.norms_q_results));
+		} else {
+			//Test data!
+			norms_data = {
+				'country': 'Brazil',
+				'responses': {
+					1: 4,
+					2: 3,
+					3: 3,
+					4: 5,
+					5: 3,
+					6: 1
+				}
+			};
+		}
+		let tl_score = calculateScore(norms_data.responses);
+		let results_data = {
+			country: norms_data.country,
+			score: tl_score.toFixed(1)
+		};
+		showResults(results_data, true);
 	}
 
 	function showResults(results = {}, showFooter = false) {
@@ -165,7 +203,7 @@ module.exports = (function(exports) {
 			//REASON: Default behavior for returning a unique PID when collecting data from other platforms
 			results.code = LITW.data.getParticipantId();
 		}
-
+		console.log("RESULT", results);
 		$("#results").html(
 			resultsTemplate({
 				data: results
@@ -194,8 +232,10 @@ module.exports = (function(exports) {
 	}
 
 	async function loadResourcesInParallel() {
-		let data = await fetch('../templates/i18n/countries-en.json');
-		params.countries = await data.json();
+		let countries_data = await fetch('../templates/i18n/countries-en.json');
+		params.countries = await countries_data.json();
+		let tight_loose_data = await fetch('./data/country-tl.json');
+		params.tight_loose = await tight_loose_data.json();
 	}
 	function startStudy() {
 		// generate unique participant id and geolocate participant
@@ -268,7 +308,8 @@ module.exports = (function(exports) {
 		startExperiment();
 	});
 	exports.study = {};
-	exports.study.params = params
+	exports.study.params = params;
+	exports.study.calculateScore = calculateScore;
 
 })( window.LITW = window.LITW || {} );
 

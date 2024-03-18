@@ -11,6 +11,7 @@
     "jquery": "3.6.0",
     "jquery-ui-bundle": "^1.11.4",
     "lodash": "^4.17.21",
+    "mathjs": "^12.4.1",
     "popper.js": "^1.16.1",
     "webpack": "^5.77.0",
     "webpack-dev-server": "^4.15.0"

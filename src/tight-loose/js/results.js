@@ -1,16 +1,16 @@
 (function (exports) {
+    const PAGE_CONTENT_WIDTH = document.getElementById('content').offsetWidth;
+    const MAX_GRAPH_WIDTH = 900;
+    const MAX_GRAPH_HEIGHT = 400;
+    const MAX_SCORE = 15;
     // Declare the chart dimensions and margins.
-    const width = 640;
-    const height = 400;
+    const width = Math.min(PAGE_CONTENT_WIDTH, MAX_GRAPH_WIDTH);
+    const height = MAX_GRAPH_HEIGHT;
     const barHeight = height/10;
-    const scoreMax = 13;
-    const marginTop = 20;
-    const marginRight = 20;
-    const marginBottom = 30;
-    const marginLeft = 40;
+    let svg = null;
 
     let _calculateMarkX = function (score) {
-        return (width/scoreMax*score)
+        return (width/MAX_SCORE*score)
     }
     let _addMark = function (context){
         context.moveTo(barHeight/2,barHeight)
@@ -19,9 +19,25 @@
         context.closePath()
         return context
     }
+
+    let drawMark = function(score, legend) {
+        let mark = svg.append("g");
+        mark.append("path")
+            .style("stroke", "black")
+            .style("fill", "none")
+            .attr('d', _addMark(d3.path()))
+        mark.append("text")
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('text-anchor', 'start')
+            .attr('font-size', '1.5em')
+            .text(legend)
+        mark.attr('transform', `translate(${_calculateMarkX(score)}, ${height/2-(3/2*barHeight)})`)
+
+    }
     let draw = function(divID) {
         // Create the SVG container.
-        const svg = d3.select(`#${divID}`)
+        svg = d3.select(`#${divID}`)
             .append("svg")
             .attr("width", width)
             .attr("height", height);
@@ -46,21 +62,13 @@
             .text($.i18n('study-tl-results-legend-tight'))
         bar.attr('transform', `translate(${0}, ${height/2-(barHeight/2)})`);
 
-        let mark = svg.append("g");
-        mark.append("path")
-            .style("stroke", "black")
-            .style("fill", "none")
-            .attr('d', _addMark(d3.path()))
-        mark.append("text")
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('text-anchor', 'start')
-            .attr('font-size', '1.5em')
-            .text($.i18n('study-tl-results-legend-usa'))
-        mark.attr('transform', `translate(${_calculateMarkX(5.1)}, ${height/2-(3/2*barHeight)})`)
+        drawMark(LITW.study.params.tight_loose['Pakistan'], 'Pakistan');
+        drawMark(LITW.study.params.tight_loose['Ukraine'], 'Ukraine');
+        drawMark(LITW.study.params.tight_loose['United Kingdom'], 'UK');
     }
 
     exports.results = {};
     exports.results.drawGraphic = draw;
+    exports.results.drawMark = drawMark;
 
 })( window.LITW = window.LITW || {} );

@@ -83,11 +83,13 @@
     }
 
     let finishNormsQuest = function() {
-        LITW.data.submitStudyData({
-            quest_norms: {
+        let quest_norms = {
                 country: selectedCountry,
                 responses: questionsNorms
-            }
+            };
+        LITW.study.params.norms_q_results = quest_norms;
+        LITW.data.submitStudyData({
+            quest_norms: quest_norms
         });
         //TODO: Create a new UTIL call that calls this click (and maybe more)!
         //EXPL: We currently use the "showNextButton(fn) in our slide processor, which should NOT be overwritten!

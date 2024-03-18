@@ -12,6 +12,7 @@
 <br>
 
 <div class="container">
+    <div id="participant_score" data-score="{{ data.score }}"></div>
     <p data-i18n="litw-results-template"></p>
     <div id="graphic" class="h-100 d-flex align-items-center justify-content-center"></div>
 </div>
@@ -23,5 +24,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         LITW.results.drawGraphic('graphic');
+        let participantScore = document.getElementById('participant_score').dataset.score;
+        LITW.results.drawMark(participantScore, 'YOU');
     });
 </script>
