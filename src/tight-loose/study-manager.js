@@ -104,8 +104,8 @@ module.exports = (function(exports) {
 	function configureStudy() {
 		// timeline.push(params.slides.INTRODUCTION);
 		// timeline.push(params.slides.INFORMED_CONSENT);
-		// timeline.push(params.slides.QUESTION1);
-		//timeline.push(params.slides.QUESTION2);
+		timeline.push(params.slides.QUESTION1);
+		timeline.push(params.slides.QUESTION2);
 		// timeline.push(params.slides.DEMOGRAPHICS);
 		// timeline.push(params.slides.COMMENTS);
 		timeline.push(params.slides.RESULTS);

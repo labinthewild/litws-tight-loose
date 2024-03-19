@@ -25,6 +25,13 @@
     $(document).ready(function() {
         LITW.results.drawGraphic('graphic');
         let participantScore = document.getElementById('participant_score').dataset.score;
-        LITW.results.drawMark(participantScore, 'YOU');
+        let national_scores = ['Ukraine', 'USA', 'UK', 'Japan', 'Pakistan'];
+        for (let country of national_scores) {
+            let nation_score = LITW.study.params.tight_loose[country];
+            if(Math.abs(participantScore-nation_score)>1.5) {
+                LITW.results.drawMark(nation_score, country)
+            }
+        }
+        LITW.results.drawMark(participantScore, 'YOU', true);
     });
 </script>

@@ -20,11 +20,12 @@
         return context
     }
 
-    let drawMark = function(score, legend) {
+    let drawMark = function(score, legend, fill= false) {
         let mark = svg.append("g");
+        let fill_color = !fill ? "none" : "black";
         mark.append("path")
             .style("stroke", "black")
-            .style("fill", "none")
+            .style("fill", fill_color)
             .attr('d', _addMark(d3.path()))
         mark.append("text")
             .attr('x', 0)
@@ -33,7 +34,6 @@
             .attr('font-size', '1.5em')
             .text(legend)
         mark.attr('transform', `translate(${_calculateMarkX(score)}, ${height/2-(3/2*barHeight)})`)
-
     }
     let draw = function(divID) {
         // Create the SVG container.
@@ -56,15 +56,20 @@
             .attr('y', barHeight*2)
             .text($.i18n('study-tl-results-legend-loose'))
         bar.append("text")
+            .attr('x', 0)
+            .attr('y', barHeight*2.5)
+            .text($.i18n('study-tl-results-legend-loose2'))
+        bar.append("text")
             .attr('x', width)
             .attr('y', barHeight*2)
             .attr('text-anchor', 'end')
             .text($.i18n('study-tl-results-legend-tight'))
+        bar.append("text")
+            .attr('x', width)
+            .attr('y', barHeight*2.5)
+            .attr('text-anchor', 'end')
+            .text($.i18n('study-tl-results-legend-tight2'))
         bar.attr('transform', `translate(${0}, ${height/2-(barHeight/2)})`);
-
-        drawMark(LITW.study.params.tight_loose['Pakistan'], 'Pakistan');
-        drawMark(LITW.study.params.tight_loose['Ukraine'], 'Ukraine');
-        drawMark(LITW.study.params.tight_loose['United Kingdom'], 'UK');
     }
 
     exports.results = {};
