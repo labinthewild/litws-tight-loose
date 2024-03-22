@@ -32,7 +32,7 @@ import * as d3 from "d3";
 module.exports = (function(exports) {
 	var timeline = [],
 	params = {
-		study_id: "TO_BE_ADDED_IF_USING_LITW_INFRA",
+		study_id: "5c24566f-b855-4783-9bf8-85d5ba864657",
 		study_recommendation: [],
 		preLoad: ["../img/btn-next.png","../img/btn-next-active.png","../img/ajax-loader.gif"],
 		countries: {},
