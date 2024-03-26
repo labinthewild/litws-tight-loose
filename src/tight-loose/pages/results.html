@@ -1,5 +1,5 @@
 <!-- Template for the results page -->
-<h3 class="bolded-blue" style="text-align: center" data-i18n="litw-results-header"></h3>
+<h3 class="bolded-blue" style="text-align: center" data-i18n="{{ data.message }}"></h3>
 
 <br>
 {{#if data.code}}
@@ -11,10 +11,28 @@
 {{/if}}
 <br>
 
-<div class="container">
+<div id="results-main" class="container center-content">
     <div id="participant_score" data-score="{{ data.score }}"></div>
-    <p data-i18n="litw-results-template"></p>
     <div id="graphic" class="h-100 d-flex align-items-center justify-content-center"></div>
+</div>
+
+<div id="results-explain" class="container border border-3 p-4" style="width: 90%">
+    <p data-i18n="study-tl-results-expl-intro"></p>
+    <p>
+        <span data-i18n="study-tl-results-expl-tight1" class="fw-bold"></span>
+        <span data-i18n="study-tl-results-expl-tight2"></span>
+    </p>
+    <p>
+        <span data-i18n="study-tl-results-expl-loose1" class="fw-bold"></span>
+        <span data-i18n="study-tl-results-expl-loose2"></span>
+    </p>
+
+    <hr/>
+    <p>
+        <span data-i18n="study-tl-results-expl-ref1-1"></span>
+        <a href="https://www.science.org/doi/10.1126/science.1197754" target="_blank"><span data-i18n="study-tl-results-expl-ref1-2"></span></a>
+        <span data-i18n="study-tl-results-expl-ref1-3"></span>
+    </p>
 </div>
 
 <br>
@@ -32,6 +50,6 @@
                 LITW.results.drawMark(nation_score, country)
             }
         }
-        LITW.results.drawMark(participantScore, 'YOU', true);
+        LITW.results.drawMark(participantScore, $.i18n('study-tl-results-you-mark'), true);
     });
 </script>

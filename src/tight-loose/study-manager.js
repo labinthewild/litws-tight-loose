@@ -102,7 +102,7 @@ module.exports = (function(exports) {
 	};
 
 	function configureStudy() {
-		// timeline.push(params.slides.INTRODUCTION);
+		timeline.push(params.slides.INTRODUCTION);
 		// timeline.push(params.slides.INFORMED_CONSENT);
 		timeline.push(params.slides.QUESTION1);
 		timeline.push(params.slides.QUESTION2);
@@ -191,7 +191,11 @@ module.exports = (function(exports) {
 			};
 		}
 		let tl_score = calculateScore(norms_data.responses);
+		let tl_min = _.min(Object.values(params.tight_loose));
+		let tl_max = _.max(Object.values(params.tight_loose));
+		let tl_center = (((tl_max-tl_min)/2)+tl_min);
 		let results_data = {
+			message: (tl_score > tl_center) ? $.i18n("study-tl-results-message-maker") : $.i18n("study-tl-results-message-breaker"),
 			country: norms_data.country,
 			score: tl_score.toFixed(1)
 		};

@@ -30,7 +30,7 @@ var config = {
     ]
   },
   externals: [
-    /^(jquery.i18n|\$)$/i,
+//    /^(jquery.i18n|\$)$/i,
     {
        d3: "d3"
     }
