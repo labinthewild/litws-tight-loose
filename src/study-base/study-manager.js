@@ -4,14 +4,14 @@
  *
  * Author: LITW Team.
  *
- * © Copyright 2017-2023 LabintheWild.
+ * © Copyright 2017-2024 LabintheWild.
  * For questions about this file and permission to use
  * the code, contact us at tech@labinthewild.org
  *************************************************************/
 
 // load webpack modules
 window.$ = window.jQuery = require("jquery");
-require("bootstrap");
+window.bootstrap = require("bootstrap");
 require("jquery-ui-bundle");
 var _ = require('lodash');
 var introTemplate = require("../templates/introduction.html");
@@ -25,6 +25,7 @@ var commentsTemplate = require("../templates/comments.html");
 require("../js/litw/jspsych-display-info");
 require("../js/litw/jspsych-display-slide");
 
+//TODO: document "params.study_id" when updating the docs/7-ManageData!!!
 module.exports = (function(exports) {
 	var timeline = [],
 	params = {
