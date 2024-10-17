@@ -1,13 +1,9 @@
 var path = require("path");
 
 var config = {
-<<<<<<<< HEAD:src/tight-loose/webpack.config.js
+  mode: 'development',
+  // mode: 'production',
   entry: path.join(__dirname, "study-manager.js"),
-========
-  // mode: 'development',
-  mode: 'production',
-  entry: path.join(__dirname, "study.js"),
->>>>>>>> template-v2:src/frame-line/webpack.config.js
   output: {
     path: path.join(__dirname, "js"),
     filename: "study-bundle.min.js"
@@ -15,28 +11,15 @@ var config = {
   module: {
     rules: [
         {
-          test: require.resolve('jquery'),
-            use: [{
-              loader: 'expose-loader',
-              options: {
-                exposes: "jquery",
-              },
-            },
-            {
-              loader: 'expose-loader',
-              options: {
-                exposes: '$',
-              },
-            }
-            ]
-        },
-        {
-          test: /.*\.html$/, loader: "handlebars-loader"
+          test: /.*\.html$/,
+          loader: "html-loader",
+          options: {
+            sources: false,
+          }
         }
     ]
   },
   externals: [
-//    /^(jquery.i18n|\$)$/i,
     {
        d3: "d3"
     }

@@ -10,28 +10,50 @@
  *************************************************************/
 
 // load webpack modules
-window.$ = window.jQuery = require("jquery");
-window.bootstrap = require("bootstrap");
+window.$ = require("jquery");
+window.jQuery = window.$;
+require("../js/jquery.i18n");
+require("../js/jquery.i18n.messagestore");
 require("jquery-ui-bundle");
-var _ = require('lodash');
-var mathjs = require("mathjs");
-var introTemplate = require("./pages/introduction.html");
-var irbTemplate = require("../templates/irb.html");
-var question1Template = require("./pages/question1.html");
-var question2Template = require("./pages/question2.html");
-var demographicsTemplate = require("../templates/demographics.html");
-var instructionsTemplate = require("../templates/instructions.html");
-var loadingTemplate = require("../templates/loading.html");
-var resultsTemplate = require("./pages/results.html");
-var resultsFooter = require("../templates/results-footer.html");
-var commentsTemplate = require("../templates/comments.html");
-require("../js/litw/jspsych-display-info");
+let Handlebars = require("handlebars");
+window.$.alpaca = require("alpaca");
+window.bootstrap = require("bootstrap");
+window._ = require("lodash");
+// var mathjs = require("mathjs");
+
+
+import progressHTML from "../templates/progress.html";
+Handlebars.registerPartial('prog', Handlebars.compile(progressHTML));
+import introHTML from "./pages/introduction.html";
+import irb_LITW_HTML from "../templates/irb2-litw.html";
+import quest1HTML from "./pages/question1.html";
+import quest2HTML from "./pages/question2.html";
+import demographicsHTML from "../templates/demographics.html";
+import loadingHTML from "../templates/loading.html";
+import resultsHTML from "./pages/results.html";
+import resultsFooterHTML from "../templates/results-footer.html";
+import commentsHTML from "../templates/comments.html";
+
 require("../js/litw/jspsych-display-slide");
-import * as d3 from "d3";
+//CONVERT HTML INTO TEMPLATES
+let introTemplate = Handlebars.compile(introHTML);
+let irbTemplate = Handlebars.compile(irb_LITW_HTML);
+let question1Template = Handlebars.compile(quest1HTML);
+let question2Template = Handlebars.compile(quest2HTML);
+let demographicsTemplate = Handlebars.compile(demographicsHTML);
+let loadingTemplate = Handlebars.compile(loadingHTML);
+let resultsTemplate = Handlebars.compile(resultsHTML);
+let resultsFooterTemplate = Handlebars.compile(resultsFooterHTML);
+let commentsTemplate = Handlebars.compile(commentsHTML);
 
 module.exports = (function(exports) {
-	var timeline = [],
-	params = {
+	const study_times= {
+		SHORT: 5,
+		MEDIUM: 10,
+		LONG: 15,
+	};
+	let timeline = [];
+	let params = {
 		study_id: "5c24566f-b855-4783-9bf8-85d5ba864657",
 		study_recommendation: [],
 		preLoad: ["../img/btn-next.png","../img/btn-next-active.png","../img/ajax-loader.gif"],
@@ -48,6 +70,9 @@ module.exports = (function(exports) {
 				name: "informed_consent",
 				type: "display-slide",
 				template: irbTemplate,
+				template_data: {
+					time: study_times.SHORT,
+				},
 				display_element: $("#irb"),
 				display_next_button: false,
 			},
@@ -69,10 +94,14 @@ module.exports = (function(exports) {
 			DEMOGRAPHICS: {
 				type: "display-slide",
 				template: demographicsTemplate,
+				template_data: {
+					local_data_id: 'LITW_DEMOGRAPHICS'
+				},
 				display_element: $("#demographics"),
 				name: "demographics",
 				finish: function(){
-					var dem_data = $('#demographicsForm').alpaca().getValue();
+					let dem_data = $('#demographicsForm').alpaca().getValue();
+					LITW.data.addToLocal(this.template_data.local_data_id, dem_data);
 					LITW.data.submitDemographics(dem_data);
 				}
 			},
@@ -82,7 +111,7 @@ module.exports = (function(exports) {
 				display_element: $("#comments"),
 				name: "comments",
 				finish: function(){
-					var comments = $('#commentsForm').alpaca().getValue();
+					let comments = $('#commentsForm').alpaca().getValue();
 					if (Object.keys(comments).length > 0) {
 						LITW.data.submitComments({
 							comments: comments
@@ -103,11 +132,11 @@ module.exports = (function(exports) {
 
 	function configureStudy() {
 		timeline.push(params.slides.INTRODUCTION);
-		// timeline.push(params.slides.INFORMED_CONSENT);
+		timeline.push(params.slides.INFORMED_CONSENT);
 		timeline.push(params.slides.QUESTION1);
 		timeline.push(params.slides.QUESTION2);
-		// timeline.push(params.slides.DEMOGRAPHICS);
-		// timeline.push(params.slides.COMMENTS);
+		timeline.push(params.slides.DEMOGRAPHICS);
+		timeline.push(params.slides.COMMENTS);
 		timeline.push(params.slides.RESULTS);
 	}
 
@@ -213,7 +242,7 @@ module.exports = (function(exports) {
 				data: results
 			}));
 		if(showFooter) {
-			$("#results-footer").html(resultsFooter(
+			$("#results-footer").html(resultsFooterTemplate(
 				{
 					share_url: window.location.href,
 					share_title: $.i18n('litw-irb-header'),
@@ -241,6 +270,7 @@ module.exports = (function(exports) {
 		let tight_loose_data = await fetch('./data/country-tl.json');
 		params.tight_loose = await tight_loose_data.json();
 	}
+
 	function startStudy() {
 		// generate unique participant id and geolocate participant
 		LITW.data.initialize();
