@@ -1,7 +1,13 @@
 var path = require("path");
 
 var config = {
+<<<<<<<< HEAD:src/tight-loose/webpack.config.js
   entry: path.join(__dirname, "study-manager.js"),
+========
+  // mode: 'development',
+  mode: 'production',
+  entry: path.join(__dirname, "study.js"),
+>>>>>>>> template-v2:src/frame-line/webpack.config.js
   output: {
     path: path.join(__dirname, "js"),
     filename: "study-bundle.min.js"
