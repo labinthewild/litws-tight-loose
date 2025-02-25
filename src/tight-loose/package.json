@@ -1,13 +1,17 @@
 {
+<<<<<<<< HEAD:src/tight-loose/package.json
   "name": "litws-tight-loose",
   "version": "1.1.0",
+========
+  "name": "litw-study-cats",
+  "version": "2.0.0-alpha",
+>>>>>>>> template-v2:src/study-cats/package.json
   "dependencies": {
     "alpaca": "^1.5.27",
     "bootstrap": "^5.3",
     "expose-loader": "^4.1.0",
     "jquery": "3.6.0",
     "jquery-ui-bundle": "^1.11.4",
-    "lodash": "^4.17.21",
     "popper.js": "^1.16.1",
     "mathjs": "^12.4.1"
   },
@@ -23,11 +27,15 @@
   },
   "repository": {
     "type": "git",
+<<<<<<<< HEAD:src/tight-loose/package.json
     "url": "git@github.com:labinthewild/litws-tight-loose.git"
+========
+    "url": "git@github.com:labinthewild/LITW-study-templates.git"
+>>>>>>>> template-v2:src/study-cats/package.json
   },
   "author": "The LabintheWild Team",
   "license": "MIT",
-  "homepage": "https://github.com/labinthewild/litws-fameline",
+  "homepage": "https://github.com/labinthewild/LITW-study-templates",
   "description": "",
   "devDependencies": {
     "handlebars": "^4.7.7",
