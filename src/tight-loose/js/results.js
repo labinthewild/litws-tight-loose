@@ -34,15 +34,23 @@
         }
 
         let mark = svg.append("g");
-        let fill_color = !fill ? "none" : "black";
+        let fill_color = "none";
+        let y_pos = tooClose ? -(barHeight()/2) : -(barHeight()/10);
+        let text_weight = "normal";
+        if(fill) {
+            fill_color = "black";
+            y_pos = -barHeight()*1.5;
+            text_weight = "bold";
+        }
         mark.append("path")
             .style("stroke", "black")
             .style("fill", fill_color)
             .attr('d', _addMark(d3.path()))
         mark.append("text")
             .attr('x', barHeight()/2)
-            .attr('y', tooClose ? -(barHeight()/2) : -(barHeight()/10) )
+            .attr('y', y_pos )
             .attr('text-anchor', 'middle')
+            .attr('font-weight', text_weight)
             .attr('font-size', '1.5em')
             .text(legend)
 

@@ -1,25 +1,25 @@
 <div id="question-box" class="instructions-stim-container">
-    <h2 id="progress">
-        <span data-i18n="study-tl-q1-question"></span>
-        <span id="progress-now"></span>
-        <span>/</span>
-        <span id="progress-total"></span>
-    </h2>
     <div id="instructions">
-        <p data-i18n="study-tl-explain-title" class="bolded-blue"></p>
+        <h2 data-i18n="study-tl-explain-title" class="bolded-blue"></h2>
         <p>
             <span data-i18n="study-tl-explain-p1"></span>
             <span data-i18n="study-tl-explain-p2"></span>
         </p>
     </div>
+    <h2 id="progress" class="bolded-blue">
+        <span data-i18n="study-tl-q1-question"></span>
+        <span id="progress-now"></span>
+        <span>/</span>
+        <span id="progress-total"></span>
+    </h2>
     <div id="question" class="row">
         <div class="col d-flex justify-content-center">
-            <h4 id="questionID" data-question_id="q1" class="bolded-blue">
+            <h5 id="questionID" data-question_id="q1" class="bolded-blue">
                 <span data-i18n="study-tl-q1-title-p1"></span>
                 <span id="question-behavior"></span>
                 <span id="question-situation"></span>
                 <span>?</span>
-            </h4>
+            </h5>
         </div>
     </div>
     <div id="response" class="row">
@@ -50,10 +50,11 @@
     let currentQ = null;
 
     let refreshBehavioralQuestion = function () {
+        let instructions = document.getElementById('instructions');
         document.getElementById('submit').classList.add('invisible');
         selectBehavioralResponse(null);
-        if (count > 0) {
-            document.getElementById('instructions').classList.add('invisible');
+        if (instructions && count > 0) {
+            instructions.remove();
         }
         if (count < questionsBehavior.length) {
             currentQ = questionsBehavior[count++];
